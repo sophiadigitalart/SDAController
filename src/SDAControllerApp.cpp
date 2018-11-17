@@ -118,7 +118,7 @@ void SDAControllerApp::fileDrop(FileDropEvent event)
 void SDAControllerApp::update()
 {
 	mSDASession->setFloatUniformValueByIndex(mSDASettings->IFPS, getAverageFps());
-	//mSDASession->update();
+	mSDASession->update();
 	if(mSpoutIn.getSize() != app::getWindowSize()) {
 		//app::setWindowSize(mSpoutIn.getSize());
 	}
@@ -215,9 +215,9 @@ void SDAControllerApp::draw()
 		gl::enableAlphaBlending();
 		gl::drawString("No sender/texture detected", vec2(toPixels(20), toPixels(20)), Color(1, 1, 1), Font("Verdana", toPixels(24)));
 	}
-	//gl::setMatricesWindow(toPixels(getWindowSize()),false);
-	//gl::setMatricesWindow(mSDASettings->mRenderWidth, mSDASettings->mRenderHeight, false);
-	//gl::draw(mSDASession->getMixTexture(), getWindowBounds());
+	gl::setMatricesWindow(toPixels(getWindowSize()), mSDASession->isFlipV());
+	//gl::setMatricesWindow(mSDASettings->mRenderWidth, mSDASettings->mRenderHeight, mSDASession->isFlipV());
+	gl::draw(mSDASession->getMixTexture(), getWindowBounds());
 
 	// Spout Send
 	mSpoutOut.sendViewport();
@@ -229,9 +229,9 @@ void SDAControllerApp::draw()
 
 void prepareSettings(App::Settings *settings)
 {
-	settings->setWindowSize(640, 480);
+	settings->setWindowSize(1280, 720);
 #ifdef _DEBUG
-	//settings->setConsoleWindowEnabled();
+	settings->setConsoleWindowEnabled();
 #else
 #endif  // _DEBUG
 }
