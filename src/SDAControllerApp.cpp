@@ -198,7 +198,7 @@ void SDAControllerApp::draw()
 			timeline().apply(&mSDASettings->iAlpha, 0.0f, 1.0f, 1.5f, EaseInCubic());
 		}
 	}
-	auto tex = mSpoutIn.receiveTexture();
+	/*auto tex = mSpoutIn.receiveTexture();
 	if (tex) {
 		// Otherwise draw the texture and fill the screen
 		gl::draw(tex, getWindowBounds());
@@ -214,7 +214,7 @@ void SDAControllerApp::draw()
 		gl::ScopedBlendAlpha alpha;
 		gl::enableAlphaBlending();
 		gl::drawString("No sender/texture detected", vec2(toPixels(20), toPixels(20)), Color(1, 1, 1), Font("Verdana", toPixels(24)));
-	}
+	}*/
 	gl::setMatricesWindow(toPixels(getWindowSize()), mSDASession->isFlipV());
 	//gl::setMatricesWindow(mSDASettings->mRenderWidth, mSDASettings->mRenderHeight, mSDASession->isFlipV());
 	gl::draw(mSDASession->getMixTexture(), getWindowBounds());
@@ -229,7 +229,7 @@ void SDAControllerApp::draw()
 
 void prepareSettings(App::Settings *settings)
 {
-	settings->setWindowSize(1280, 720);
+	settings->setWindowSize(1680, 1050);
 #ifdef _DEBUG
 	settings->setConsoleWindowEnabled();
 #else
