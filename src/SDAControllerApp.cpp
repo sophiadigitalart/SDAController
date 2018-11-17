@@ -11,6 +11,10 @@
 // Spout
 #include "CiSpoutOut.h"
 #include "CiSpoutIn.h"
+// UI
+#define IMGUI_DISABLE_OBSOLETE_FUNCTIONS 1
+#include "SDAUI.h"
+#define IM_ARRAYSIZE(_ARR)			((int)(sizeof(_ARR)/sizeof(*_ARR)))
 
 using namespace ci;
 using namespace ci::app;
@@ -39,6 +43,10 @@ private:
 	SDASessionRef					mSDASession;
 	// Log
 	SDALogRef						mSDALog;
+	// UI
+	SDAUIRef						mSDAUI;
+	// handle resizing for imgui
+	void							resizeWindow();
 	// imgui
 	float							color[4];
 	float							backcolor[4];
@@ -75,11 +83,17 @@ SDAControllerApp::SDAControllerApp()
 
 	mouseGlobal = false;
 	mFadeInDelay = true;
+	// UI
+	mSDAUI = SDAUI::create(mSDASettings, mSDASession);
 	// windows
 	mIsShutDown = false;
 	mRenderWindowTimer = 0.0f;
 	//timeline().apply(&mRenderWindowTimer, 1.0f, 2.0f).finishFn([&] { positionRenderWindow(); });
 
+}
+void SDAControllerApp::resizeWindow()
+{
+	mSDAUI->resize();
 }
 void SDAControllerApp::positionRenderWindow() {
 	mSDASettings->mRenderPosXY = ivec2(mSDASettings->mRenderX, mSDASettings->mRenderY);//20141214 was 0
@@ -207,12 +221,19 @@ void SDAControllerApp::draw()
 
 	// Spout Send
 	mSpoutOut.sendViewport();
+	mSDAUI->Run("UI", (int)getAverageFps());
+	if (mSDAUI->isReady()) {
+	}
 	getWindow()->setTitle(mSDASettings->sFps + " fps SDAController");
 }
 
 void prepareSettings(App::Settings *settings)
 {
 	settings->setWindowSize(640, 480);
+#ifdef _DEBUG
+	//settings->setConsoleWindowEnabled();
+#else
+#endif  // _DEBUG
 }
 
 CINDER_APP(SDAControllerApp, RendererGl, prepareSettings)
