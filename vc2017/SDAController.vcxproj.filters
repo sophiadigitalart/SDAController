@@ -66,6 +66,9 @@
     <Filter Include="Blocks\Cinder-WebSocketPP\src">
       <UniqueIdentifier>{C1A1C79A-C4E8-4192-A4CC-9F5C2E4253A7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="debug">
+      <UniqueIdentifier>{abc4de45-5bd0-403e-a360-0043f9037ec1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\SDAControllerApp.cpp">
@@ -330,5 +333,10 @@
     <ResourceCompile Include="Resources.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="build\Win32\Debug\SDASettings.xml">
+      <Filter>debug</Filter>
+    </Xml>
   </ItemGroup>
 </Project>
