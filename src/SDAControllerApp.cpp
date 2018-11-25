@@ -67,6 +67,9 @@ private:
 	bool							mFadeInDelay;
 	SpoutOut 						mSpoutOut;
 	SpoutIn							mSpoutIn;
+	bool							mFlipV;
+	bool							mFlipH;
+
 };
 
 
@@ -87,6 +90,8 @@ SDAControllerApp::SDAControllerApp()
 	mSDAUI = SDAUI::create(mSDASettings, mSDASession);
 	// windows
 	mIsShutDown = false;
+	mFlipV = false;
+	mFlipH = true;
 	mRenderWindowTimer = 0.0f;
 	//timeline().apply(&mRenderWindowTimer, 1.0f, 2.0f).finishFn([&] { positionRenderWindow(); });
 
@@ -215,9 +220,23 @@ void SDAControllerApp::draw()
 		gl::enableAlphaBlending();
 		gl::drawString("No sender/texture detected", vec2(toPixels(20), toPixels(20)), Color(1, 1, 1), Font("Verdana", toPixels(24)));
 	}*/
-	gl::setMatricesWindow(toPixels(getWindowSize()), mSDASession->isFlipV());
+	gl::setMatricesWindow(toPixels(getWindowSize()), false);
 	//gl::setMatricesWindow(mSDASettings->mRenderWidth, mSDASettings->mRenderHeight, mSDASession->isFlipV());
-	gl::draw(mSDASession->getMixTexture(), getWindowBounds());
+	int xLeft = 0;
+	int xRight = getWindowWidth();
+	int yLeft = 0;
+	int yRight = getWindowHeight();
+	if (mFlipV) {
+		yLeft = yRight;
+		yRight = 0;
+	}
+	if (mFlipH) {
+		xLeft = xRight;
+		xRight = 0;
+	}
+	Rectf rectangle = Rectf(xLeft, yLeft, xRight, yRight);
+	
+	gl::draw(mSDASession->getMixTexture(), rectangle);
 
 	// Spout Send
 	mSpoutOut.sendViewport();
