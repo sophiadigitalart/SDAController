@@ -79,7 +79,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;"..\..\..\Cinder\include";..\..\..\Cinder\blocks\Cinder-ImGui\lib\imgui;..\..\..\Cinder\blocks\Cinder-ImGui\include;..\..\..\Cinder\blocks\Cinder-MIDI2\include;..\..\..\Cinder\blocks\Cinder-MIDI2\lib;..\..\..\Cinder\blocks\Cinder-MIDI2\src;..\..\..\Cinder\blocks\Cinder-SDA\include;..\..\..\Cinder\blocks\Cinder-SDA\src;..\..\..\Cinder\blocks\Cinder-SDAUI\include;..\..\..\Cinder\blocks\Cinder-SDAUI\src;..\..\..\Cinder\blocks\Cinder-Spout\include;..\..\..\Cinder\blocks\Cinder-WebSocketPP\src;..\..\..\Cinder\include\asio</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\..\..\Cinder\include;..\..\..\Cinder\blocks\Cinder-ImGui\lib\imgui;..\..\..\Cinder\blocks\Cinder-ImGui\include;..\..\..\Cinder\blocks\Cinder-MIDI2\include;..\..\..\Cinder\blocks\Cinder-MIDI2\lib;..\..\..\Cinder\blocks\Cinder-MIDI2\src;..\..\..\Cinder\blocks\Cinder-SDA\include;..\..\..\Cinder\blocks\Cinder-SDA\src;..\..\..\Cinder\blocks\Cinder-SDAUI\include;..\..\..\Cinder\blocks\Cinder-SDAUI\src;..\..\..\Cinder\blocks\Cinder-Spout\include;..\..\..\Cinder\blocks\Cinder-WebSocketPP\src;..\..\..\Cinder\include\asio;..\..\..\Cinder\blocks\OSC\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__WINDOWS_MM__;WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -138,7 +138,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;"..\..\..\Cinder\include";..\..\..\Cinder\blocks\Cinder-ImGui\lib\imgui;..\..\..\Cinder\blocks\Cinder-ImGui\include;..\..\..\Cinder\blocks\Cinder-MIDI2\include;..\..\..\Cinder\blocks\Cinder-MIDI2\lib;..\..\..\Cinder\blocks\Cinder-MIDI2\src;..\..\..\Cinder\blocks\Cinder-SDA\include;..\..\..\Cinder\blocks\Cinder-SDA\src;..\..\..\Cinder\blocks\Cinder-SDAUI\include;..\..\..\Cinder\blocks\Cinder-SDAUI\src;..\..\..\Cinder\blocks\Cinder-Spout\include;..\..\..\Cinder\blocks\Cinder-WebSocketPP\src;..\..\..\Cinder\include\asio</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\..\..\Cinder\include;..\..\..\Cinder\blocks\Cinder-ImGui\lib\imgui;..\..\..\Cinder\blocks\Cinder-ImGui\include;..\..\..\Cinder\blocks\Cinder-MIDI2\include;..\..\..\Cinder\blocks\Cinder-MIDI2\lib;..\..\..\Cinder\blocks\Cinder-MIDI2\src;..\..\..\Cinder\blocks\Cinder-SDA\include;..\..\..\Cinder\blocks\Cinder-SDA\src;..\..\..\Cinder\blocks\Cinder-SDAUI\include;..\..\..\Cinder\blocks\Cinder-SDAUI\src;..\..\..\Cinder\blocks\Cinder-Spout\include;..\..\..\Cinder\blocks\Cinder-WebSocketPP\src;..\..\..\Cinder\include\asio;..\..\..\Cinder\blocks\OSC\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__WINDOWS_MM__;WIN32;_WIN32_WINNT=0x0601;_WINDOWS;NOMINMAX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
@@ -205,10 +205,11 @@
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="build\Win32\Debug\SDASettings.xml" />
+    <Xml Include="build\Win32\Debug\SDAController.xml" />
+    <Xml Include="build\Win32\Release\SDAController.xml" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <ClInclude Include="..\..\..\Cinder\blocks\OSC\src\cinder\osc\Osc.h" />
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\..\..\Cinder\blocks\Cinder-ImGui\include\CinderImGui.h" />
     <ClInclude Include="..\..\..\Cinder\blocks\Cinder-ImGui\include\imgui_user.h" />
@@ -256,6 +257,7 @@
     <ClInclude Include="..\..\..\Cinder\blocks\Cinder-WebSocketPP\src\WebSocketServer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\Cinder\blocks\OSC\src\cinder\osc\Osc.cpp" />
     <ClCompile Include="..\src\SDAControllerApp.cpp" />
     <ClCompile Include="..\..\..\Cinder\blocks\Cinder-ImGui\src\CinderImGui.cpp" />
     <ClCompile Include="..\..\..\Cinder\blocks\Cinder-ImGui\lib\imgui\imgui.cpp" />

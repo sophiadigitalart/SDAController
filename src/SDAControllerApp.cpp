@@ -77,7 +77,7 @@ SDAControllerApp::SDAControllerApp()
 	: mSpoutOut("SDAController", app::getWindowSize())
 {
 	// Settings
-	mSDASettings = SDASettings::create();
+	mSDASettings = SDASettings::create("Controller");
 	// Session
 	mSDASession = SDASession::create(mSDASettings);
 	//mSDASettings->mCursorVisible = true;
@@ -220,7 +220,9 @@ void SDAControllerApp::draw()
 		gl::enableAlphaBlending();
 		gl::drawString("No sender/texture detected", vec2(toPixels(20), toPixels(20)), Color(1, 1, 1), Font("Verdana", toPixels(24)));
 	}*/
-	gl::setMatricesWindow(toPixels(getWindowSize()), false);
+	// 20190215 gl::setMatricesWindow(toPixels(getWindowSize()), false);
+	gl::setMatricesWindow(mSDASettings->mFboWidth, mSDASettings->mFboHeight, false);
+
 	//gl::setMatricesWindow(mSDASettings->mRenderWidth, mSDASettings->mRenderHeight, mSDASession->isFlipV());
 	int xLeft = 0;
 	int xRight = getWindowWidth();
@@ -252,6 +254,7 @@ void prepareSettings(App::Settings *settings)
 #ifdef _DEBUG
 	settings->setConsoleWindowEnabled();
 #else
+	settings->setConsoleWindowEnabled();
 #endif  // _DEBUG
 }
 
