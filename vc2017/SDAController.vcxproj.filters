@@ -75,6 +75,9 @@
     <Filter Include="release">
       <UniqueIdentifier>{7ecf03f8-125d-4cc7-bb06-c83db98d1b14}</UniqueIdentifier>
     </Filter>
+    <Filter Include="assets">
+      <UniqueIdentifier>{af9fb8d6-d6b7-4728-b47d-2f3ebb23ca43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\SDAControllerApp.cpp">
@@ -353,5 +356,10 @@
     <Xml Include="build\Win32\Release\SDAController.xml">
       <Filter>release</Filter>
     </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\assets\uniforms.json">
+      <Filter>assets</Filter>
+    </None>
   </ItemGroup>
 </Project>

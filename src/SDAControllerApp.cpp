@@ -69,7 +69,8 @@ private:
 	SpoutIn							mSpoutIn;
 	bool							mFlipV;
 	bool							mFlipH;
-
+	int								xLeft, xRight, yLeft, yRight;
+	int								margin, tWidth, tHeight;
 };
 
 
@@ -92,6 +93,13 @@ SDAControllerApp::SDAControllerApp()
 	mIsShutDown = false;
 	mFlipV = false;
 	mFlipH = true;
+	xLeft = 0;
+	xRight = mSDASettings->mRenderWidth;
+	yLeft = 0;
+	yRight = mSDASettings->mRenderHeight;
+	margin = 20;
+	tWidth = mSDASettings->mFboWidth / 2;
+	tHeight = mSDASettings->mFboHeight / 2;
 	mRenderWindowTimer = 0.0f;
 	//timeline().apply(&mRenderWindowTimer, 1.0f, 2.0f).finishFn([&] { positionRenderWindow(); });
 
@@ -173,16 +181,24 @@ void SDAControllerApp::mouseUp(MouseEvent event)
 
 void SDAControllerApp::keyDown(KeyEvent event)
 {
+#if defined( CINDER_COCOA )
+	bool isModDown = event.isMetaDown();
+#else // windows
+	bool isModDown = event.isControlDown();
+#endif
+	CI_LOG_V("main keydown: " + toString(event.getCode()) + " ctrl: " + toString(isModDown));
+	if (isModDown) {
+	}
 	if (!mSDASession->handleKeyDown(event)) {
 		switch (event.getCode()) {
-		case KeyEvent::KEY_ESCAPE:
-			// quit the application
-			quit();
-			break;
 		case KeyEvent::KEY_h:
 			// mouse cursor and ui visibility
 			mSDASettings->mCursorVisible = !mSDASettings->mCursorVisible;
 			setUIVisibility(mSDASettings->mCursorVisible);
+			break;
+	
+		default:
+			CI_LOG_V("main keydown: " + toString(event.getCode()));
 			break;
 		}
 	}
@@ -190,6 +206,12 @@ void SDAControllerApp::keyDown(KeyEvent event)
 void SDAControllerApp::keyUp(KeyEvent event)
 {
 	if (!mSDASession->handleKeyUp(event)) {
+		switch (event.getCode()) {
+		
+		default:
+			CI_LOG_V("main keyup: " + toString(event.getCode()));
+			break;
+		}
 	}
 }
 
@@ -203,45 +225,37 @@ void SDAControllerApp::draw()
 			timeline().apply(&mSDASettings->iAlpha, 0.0f, 1.0f, 1.5f, EaseInCubic());
 		}
 	}
-	/*auto tex = mSpoutIn.receiveTexture();
-	if (tex) {
-		// Otherwise draw the texture and fill the screen
-		gl::draw(tex, getWindowBounds());
-
-		// Show the user what it is receiving
-		gl::ScopedBlendAlpha alpha;
-		gl::enableAlphaBlending();
-		gl::drawString("Receiving from: " + mSpoutIn.getSenderName(), vec2(toPixels(20), toPixels(20)), Color(1, 1, 1), Font("Verdana", toPixels(24)));
-		gl::drawString("fps: " + std::to_string((int)getAverageFps()), vec2(getWindowWidth() - toPixels(100), toPixels(20)), Color(1, 1, 1), Font("Verdana", toPixels(24)));
-		gl::drawString("RH click to select a sender", vec2(toPixels(20), getWindowHeight() - toPixels(40)), Color(1, 1, 1), Font("Verdana", toPixels(24)));
-	}
-	else {
-		gl::ScopedBlendAlpha alpha;
-		gl::enableAlphaBlending();
-		gl::drawString("No sender/texture detected", vec2(toPixels(20), toPixels(20)), Color(1, 1, 1), Font("Verdana", toPixels(24)));
-	}*/
+	
 	// 20190215 gl::setMatricesWindow(toPixels(getWindowSize()), false);
 	gl::setMatricesWindow(mSDASettings->mFboWidth, mSDASettings->mFboHeight, false);
-
-	//gl::setMatricesWindow(mSDASettings->mRenderWidth, mSDASettings->mRenderHeight, mSDASession->isFlipV());
-	int xLeft = 0;
-	int xRight = getWindowWidth();
-	int yLeft = 0;
-	int yRight = getWindowHeight();
-	if (mFlipV) {
-		yLeft = yRight;
-		yRight = 0;
-	}
-	if (mFlipH) {
-		xLeft = xRight;
-		xRight = 0;
-	}
-	Rectf rectangle = Rectf(xLeft, yLeft, xRight, yRight);
+	// 20190215 gl::setMatricesWindow(mSDASettings->mRenderWidth, mSDASettings->mRenderHeight, mSDASession->isFlipV());
 	
-	gl::draw(mSDASession->getMixTexture(), rectangle);
-
+	//Rectf rectangle = Rectf(mSDASettings->mxLeft, mSDASettings->myLeft, mSDASettings->mxRight, mSDASettings->myRight);
+	//gl::draw(mSDASession->getMixTexture(), rectangle);
+	//gl::drawString("xRight: " + std::to_string(mSDASettings->myRight), vec2(toPixels(400), toPixels(300)), Color(1, 1, 1), Font("Verdana", toPixels(24)));
+	// 20190215 gl::setMatricesWindow(mSDASettings->mMainWindowWidth, mSDASettings->mMainWindowHeight, false);
+	gl::draw(mSDASession->getMixTexture(), getWindowBounds());
+	
+	
 	// Spout Send
 	mSpoutOut.sendViewport();
+
+	// original
+	gl::draw(mSDASession->getHydraTexture(), Rectf(0, 0, tWidth, tHeight));
+	gl::drawString("Original", vec2(toPixels(0), toPixels(tHeight)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
+	// flipH
+	gl::draw(mSDASession->getHydraTexture(), Rectf(tWidth * 2 + margin, 0, tWidth + margin, tHeight));
+	gl::drawString("FlipH", vec2(toPixels(tWidth + margin), toPixels(tHeight)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
+	// flipV
+	gl::draw(mSDASession->getHydraTexture(), Rectf(0, tHeight * 2 + margin, tWidth, tHeight + margin));
+	gl::drawString("FlipV", vec2(toPixels(0), toPixels(tHeight * 2 + margin)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
+
+	// show the FBO color texture 
+	gl::draw(mSDASession->getMixTexture(), Rectf(tWidth + margin, tHeight + margin, tWidth * 2 + margin, tHeight * 2 + margin));
+	gl::drawString("Shader", vec2(toPixels(tWidth + margin), toPixels(tHeight * 2 + margin)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
+
+
+
 	mSDAUI->Run("UI", (int)getAverageFps());
 	if (mSDAUI->isReady()) {
 	}
@@ -250,7 +264,8 @@ void SDAControllerApp::draw()
 
 void prepareSettings(App::Settings *settings)
 {
-	settings->setWindowSize(1680, 1050);
+	settings->setWindowSize(1280, 720);
+	//settings->setWindowSize(1920, 1080);
 #ifdef _DEBUG
 	settings->setConsoleWindowEnabled();
 #else
