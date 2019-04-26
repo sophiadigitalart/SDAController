@@ -240,20 +240,25 @@ void SDAControllerApp::draw()
 	// Spout Send
 	mSpoutOut.sendViewport();
 
-	// original
-	gl::draw(mSDASession->getHydraTexture(), Rectf(0, 0, tWidth, tHeight));
-	gl::drawString("Original", vec2(toPixels(0), toPixels(tHeight)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
-	// flipH
-	gl::draw(mSDASession->getHydraTexture(), Rectf(tWidth * 2 + margin, 0, tWidth + margin, tHeight));
-	gl::drawString("FlipH", vec2(toPixels(tWidth + margin), toPixels(tHeight)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
-	// flipV
-	gl::draw(mSDASession->getHydraTexture(), Rectf(0, tHeight * 2 + margin, tWidth, tHeight + margin));
-	gl::drawString("FlipV", vec2(toPixels(0), toPixels(tHeight * 2 + margin)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
-
+	gl::draw(mSDASession->getMixetteTexture(), Rectf(0, 0, tWidth, tHeight));
+	gl::drawString("Mixette", vec2(toPixels(xLeft), toPixels(tHeight)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
+	// flipH MODE_IMAGE = 1
+	gl::draw(mSDASession->getRenderTexture(), Rectf(tWidth * 2 + margin, 0, tWidth + margin, tHeight));
+	gl::drawString("Render", vec2(toPixels(xLeft + tWidth + margin), toPixels(tHeight)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
+	// flipV MODE_MIX = 0
+	gl::draw(mSDASession->getMixTexture(), Rectf(0, tHeight * 2 + margin, tWidth, tHeight + margin));
+	gl::drawString("Mix", vec2(toPixels(xLeft), toPixels(tHeight * 2 + margin)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
 	// show the FBO color texture 
-	gl::draw(mSDASession->getMixTexture(), Rectf(tWidth + margin, tHeight + margin, tWidth * 2 + margin, tHeight * 2 + margin));
-	gl::drawString("Shader", vec2(toPixels(tWidth + margin), toPixels(tHeight * 2 + margin)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
+	gl::draw(mSDASession->getHydraTexture(), Rectf(tWidth + margin, tHeight + margin, tWidth * 2 + margin, tHeight * 2 + margin));
+	gl::drawString("Hydra", vec2(toPixels(xLeft + tWidth + margin), toPixels(tHeight * 2 + margin)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
 
+
+	gl::drawString("irx: " + std::to_string(mSDASession->getFloatUniformValueByName("iResolutionX"))
+		+ " iry: " + std::to_string(mSDASession->getFloatUniformValueByName("iResolutionY"))
+		+ " fw: " + std::to_string(mSDASettings->mFboWidth)
+		+ " fh: " + std::to_string(mSDASettings->mFboHeight),
+		vec2(xLeft, getWindowHeight() - toPixels(30)), Color(1, 1, 1),
+		Font("Verdana", toPixels(24)));
 
 
 	mSDAUI->Run("UI", (int)getAverageFps());
