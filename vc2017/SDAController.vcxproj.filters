@@ -356,9 +356,24 @@
     <Xml Include="build\Win32\Release\SDAController.xml">
       <Filter>release</Filter>
     </Xml>
+    <Xml Include="..\..\assets\textures.xml">
+      <Filter>assets</Filter>
+    </Xml>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\assets\uniforms.json">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\..\assets\0.frag">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\..\assets\a.glsl">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\..\assets\session.json">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="..\..\assets\animation.json">
       <Filter>assets</Filter>
     </None>
   </ItemGroup>

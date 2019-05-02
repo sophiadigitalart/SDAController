@@ -71,6 +71,7 @@ private:
 	bool							mFlipH;
 	int								xLeft, xRight, yLeft, yRight;
 	int								margin, tWidth, tHeight;
+	int								mode;
 };
 
 
@@ -101,6 +102,7 @@ SDAControllerApp::SDAControllerApp()
 	tWidth = mSDASettings->mFboWidth / 2;
 	tHeight = mSDASettings->mFboHeight / 2;
 	mRenderWindowTimer = 0.0f;
+	mode = 0;
 	//timeline().apply(&mRenderWindowTimer, 1.0f, 2.0f).finishFn([&] { positionRenderWindow(); });
 
 }
@@ -228,13 +230,42 @@ void SDAControllerApp::draw()
 	
 	// 20190215 gl::setMatricesWindow(toPixels(getWindowSize()), false);
 	gl::setMatricesWindow(mSDASettings->mFboWidth, mSDASettings->mFboHeight, false);
+	mode = mSDASession->getMode();
+	switch (mode)
+	{
+	case 1:
+		gl::draw(mSDASession->getMixTexture(), getWindowBounds());
+		break;
+	case 2:
+		gl::draw(mSDASession->getRenderTexture(), getWindowBounds());
+		break;
+	case 3:
+		gl::draw(mSDASession->getHydraTexture(), getWindowBounds());
+		break;
+	case 4:
+		gl::draw(mSDASession->getFboTexture(0), getWindowBounds());
+		break;
+	case 5:
+		gl::draw(mSDASession->getFboTexture(1), getWindowBounds());
+		break;
+	case 6:
+		gl::draw(mSDASession->getFboTexture(2), getWindowBounds());
+		break;
+	case 7:
+		gl::draw(mSDASession->getFboTexture(3), getWindowBounds());
+		break;
+	default:
+		gl::draw(mSDASession->getMixetteTexture(), getWindowBounds());
+
+		break;
+	}
 	// 20190215 gl::setMatricesWindow(mSDASettings->mRenderWidth, mSDASettings->mRenderHeight, mSDASession->isFlipV());
 	
 	//Rectf rectangle = Rectf(mSDASettings->mxLeft, mSDASettings->myLeft, mSDASettings->mxRight, mSDASettings->myRight);
 	//gl::draw(mSDASession->getMixTexture(), rectangle);
 	//gl::drawString("xRight: " + std::to_string(mSDASettings->myRight), vec2(toPixels(400), toPixels(300)), Color(1, 1, 1), Font("Verdana", toPixels(24)));
 	// 20190215 gl::setMatricesWindow(mSDASettings->mMainWindowWidth, mSDASettings->mMainWindowHeight, false);
-	gl::draw(mSDASession->getMixTexture(), getWindowBounds());
+	//gl::draw(mSDASession->getMixTexture(), getWindowBounds());
 	
 	
 	// Spout Send
@@ -274,7 +305,7 @@ void prepareSettings(App::Settings *settings)
 #ifdef _DEBUG
 	settings->setConsoleWindowEnabled();
 #else
-	settings->setConsoleWindowEnabled();
+	//settings->setConsoleWindowEnabled();
 #endif  // _DEBUG
 }
 
