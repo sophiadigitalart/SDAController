@@ -104,7 +104,8 @@ SDAControllerApp::SDAControllerApp()
 	mRenderWindowTimer = 0.0f;
 	mode = 0;
 	//timeline().apply(&mRenderWindowTimer, 1.0f, 2.0f).finishFn([&] { positionRenderWindow(); });
-
+	mSDASession->setBoolUniformValueByIndex(mSDASettings->IFLIPH, true);
+	mSDASession->setBoolUniformValueByIndex(mSDASettings->IFLIPV, false);
 }
 void SDAControllerApp::resizeWindow()
 {
@@ -269,8 +270,8 @@ void SDAControllerApp::draw()
 	
 	
 	// Spout Send
-	mSpoutOut.sendViewport();
-
+	//mSpoutOut.sendViewport();
+	mSpoutOut.sendTexture(mSDASession->getMixetteTexture());
 	gl::draw(mSDASession->getMixetteTexture(), Rectf(0, 0, tWidth, tHeight));
 	gl::drawString("Mixette", vec2(toPixels(xLeft), toPixels(tHeight)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
 	// flipH MODE_IMAGE = 1
@@ -303,7 +304,7 @@ void prepareSettings(App::Settings *settings)
 	settings->setWindowSize(1280, 720);
 	//settings->setWindowSize(1920, 1080);
 #ifdef _DEBUG
-	settings->setConsoleWindowEnabled();
+	//settings->setConsoleWindowEnabled();
 #else
 	//settings->setConsoleWindowEnabled();
 #endif  // _DEBUG
