@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDAController", "SDAController.vcxproj", "{EE546DD6-6357-4EA1-B42B-7FBFBF90F3DD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VDController", "VDController.vcxproj", "{EE546DD6-6357-4EA1-B42B-7FBFBF90F3DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
