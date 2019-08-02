@@ -19,7 +19,7 @@
 using namespace ci;
 using namespace ci::app;
 using namespace std;
-using namespace VideoDromm;
+using namespace videodromm;
 
 class VDControllerApp : public App {
 
@@ -35,7 +35,7 @@ public:
 	void update() override;
 	void draw() override;
 	void cleanup() override;
-	void setUIVisibility(bool visible);
+	void toggleCursorVisibility(bool visible);
 private:
 	// Settings
 	VDSettingsRef					mVDSettings;
@@ -83,7 +83,7 @@ VDControllerApp::VDControllerApp()
 	// Session
 	mVDSession = VDSession::create(mVDSettings);
 	//mVDSettings->mCursorVisible = true;
-	setUIVisibility(mVDSettings->mCursorVisible);
+	toggleCursorVisibility(mVDSettings->mCursorVisible);
 	mVDSession->getWindowsResolution();
 
 	mouseGlobal = false;
@@ -116,7 +116,7 @@ void VDControllerApp::positionRenderWindow() {
 	setWindowPos(mVDSettings->mRenderX, mVDSettings->mRenderY);
 	setWindowSize(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight);
 }
-void VDControllerApp::setUIVisibility(bool visible)
+void VDControllerApp::toggleCursorVisibility(bool visible)
 {
 	if (visible)
 	{
@@ -194,10 +194,10 @@ void VDControllerApp::keyDown(KeyEvent event)
 	}
 	if (!mVDSession->handleKeyDown(event)) {
 		switch (event.getCode()) {
-		case KeyEvent::KEY_h:
+		case KeyEvent::KEY_c:
 			// mouse cursor and ui visibility
 			mVDSettings->mCursorVisible = !mVDSettings->mCursorVisible;
-			setUIVisibility(mVDSettings->mCursorVisible);
+			toggleCursorVisibility(mVDSettings->mCursorVisible);
 			break;
 	
 		default:
@@ -230,37 +230,48 @@ void VDControllerApp::draw()
 	}
 	
 	// 20190215 gl::setMatricesWindow(toPixels(getWindowSize()), false);
-	gl::setMatricesWindow(mVDSettings->mFboWidth, mVDSettings->mFboHeight, false);
+		// 20190215 gl::setMatricesWindow(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, mVDSession->isFlipV());
+	// 20190729 gl::setMatricesWindow(mVDSettings->mFboWidth, mVDSettings->mFboHeight, false);
+	// must match windowSize
+	gl::setMatricesWindow(mVDSession->getIntUniformValueByIndex(mVDSettings->IOUTW), mVDSession->getIntUniformValueByIndex(mVDSettings->IOUTH), false); 
+
 	mode = mVDSession->getMode();
 	switch (mode)
 	{
 	case 1:
 		gl::draw(mVDSession->getMixTexture(), getWindowBounds());
+		mSpoutOut.sendTexture(mVDSession->getMixTexture());
 		break;
 	case 2:
 		gl::draw(mVDSession->getRenderTexture(), getWindowBounds());
+		mSpoutOut.sendTexture(mVDSession->getRenderTexture());
 		break;
 	case 3:
 		gl::draw(mVDSession->getHydraTexture(), getWindowBounds());
+		mSpoutOut.sendTexture(mVDSession->getHydraTexture());
 		break;
 	case 4:
 		gl::draw(mVDSession->getFboTexture(0), getWindowBounds());
+		mSpoutOut.sendTexture(mVDSession->getFboTexture(0));
 		break;
 	case 5:
 		gl::draw(mVDSession->getFboTexture(1), getWindowBounds());
+		mSpoutOut.sendTexture(mVDSession->getFboTexture(1));
 		break;
 	case 6:
 		gl::draw(mVDSession->getFboTexture(2), getWindowBounds());
+		mSpoutOut.sendTexture(mVDSession->getFboTexture(2));
 		break;
 	case 7:
 		gl::draw(mVDSession->getFboTexture(3), getWindowBounds());
+		mSpoutOut.sendTexture(mVDSession->getFboTexture(3));
 		break;
 	default:
 		gl::draw(mVDSession->getMixetteTexture(), getWindowBounds());
-
+		mSpoutOut.sendTexture(mVDSession->getMixetteTexture());
 		break;
-	}
-	// 20190215 gl::setMatricesWindow(mVDSettings->mRenderWidth, mVDSettings->mRenderHeight, mVDSession->isFlipV());
+	} 
+
 	
 	//Rectf rectangle = Rectf(mVDSettings->mxLeft, mVDSettings->myLeft, mVDSettings->mxRight, mVDSettings->myRight);
 	//gl::draw(mVDSession->getMixTexture(), rectangle);
@@ -271,7 +282,7 @@ void VDControllerApp::draw()
 	
 	// Spout Send
 	//mSpoutOut.sendViewport();
-	mSpoutOut.sendTexture(mVDSession->getMixetteTexture());
+	
 	gl::draw(mVDSession->getMixetteTexture(), Rectf(0, 0, tWidth, tHeight));
 	gl::drawString("Mixette", vec2(toPixels(xLeft), toPixels(tHeight)), Color(1, 1, 1), Font("Verdana", toPixels(16)));
 	// flipH MODE_IMAGE = 1
@@ -292,9 +303,11 @@ void VDControllerApp::draw()
 		vec2(xLeft, getWindowHeight() - toPixels(30)), Color(1, 1, 1),
 		Font("Verdana", toPixels(24)));
 
-
-	mVDUI->Run("UI", (int)getAverageFps());
-	if (mVDUI->isReady()) {
+	// imgui
+	if (mVDSession->showUI()) {
+		mVDUI->Run("UI", (int)getAverageFps());
+		if (mVDUI->isReady()) {
+		}
 	}
 	getWindow()->setTitle(mVDSettings->sFps + " fps VDController");
 }
